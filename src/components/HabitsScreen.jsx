@@ -1,22 +1,56 @@
 import axios from "axios";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import styled from "styled-components";
 
+import UserContext from "./contexts/UserContext";
 import Container from "./layouts/Container";
 import Header from "./layouts/Header";
 import Footer from "./layouts/Footer";
 import HabitRegister from "./HabitRegister";
 import Habit from "./Habit";
-import { Link } from "react-router-dom";
 
 function HabitsScreen(){
+    const { token } = useContext(UserContext);
+    const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
+
+
     const [isRegisteringHabit, setIsRegisteringHabit] = useState(false);
     const [habits, setHabits] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
+    function loadHabitsFromAPI(){
+        const config = {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        }
+        setIsLoading(false);
+        const promise = axios.get(API_URL, config);
+
+        promise.then(response => {
+            const {data} = response;
+            setHabits(data);
+            console.log(data);
+            setIsLoading(false);
+        });
+        promise.catch(err => {
+            console.log(err.response)
+            setIsLoading(false);
+        });
+    }
+
+    useEffect(() => {
+        loadHabitsFromAPI();
+    }, []);
+
+    function reloadHabits(){
+        setIsRegisteringHabit(false);
+        loadHabitsFromAPI();
+    }
+
     function setRegisterHabit() {
         return !isRegisteringHabit ? <></>
-        :  <HabitRegister setIsRegisteringHabit={setIsRegisteringHabit} habits={habits} setHabits={setHabits}/>       
+        :  <HabitRegister token={token} setIsRegisteringHabit={setIsRegisteringHabit} isLoading={isLoading} setIsLoading={setIsLoading} reloadHabits={reloadHabits}/>       
     }
 
     function setHabitsList(){

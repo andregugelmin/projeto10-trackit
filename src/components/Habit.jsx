@@ -1,14 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 function Habit(props){
     const {habit} = props;
+
+    const [days, setDays] = useState([
+        {name: 'D', class: 'unselected', number: 0},
+        {name: 'S', class: 'unselected', number: 1},
+        {name: 'T', class: 'unselected', number: 2},
+        {name: 'Q', class: 'unselected', number: 3},
+        {name: 'Q', class: 'unselected', number: 4},
+        {name: 'S', class: 'unselected', number: 5},
+        {name: 'S', class: 'unselected', number: 6}]);
+
+
+    useEffect(() => {
+        let selectedDays = [...days];
+        selectedDays.map(day => {
+            if(habit.days.includes(day.number)) day.class = 'selected';
+        })   
+        setDays(selectedDays);
+
+        console.log(selectedDays);
+    }, []);    
     
     return(
     <HabitElemet>
         <span className="habit-name">{habit.name}</span>
         <div className="days">
-            {habit.days.map((day, index)=> <div key={index} className={`day ${day.class}`}>{day.name}</div>)}
+            {days.map((day, index)=> <div key={index} className={`day ${day.class}`}>{day.name}</div>)}
         </div>
         <ion-icon name="trash-outline"></ion-icon>
     </HabitElemet>

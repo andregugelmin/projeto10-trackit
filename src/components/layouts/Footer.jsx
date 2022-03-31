@@ -1,16 +1,26 @@
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
+import {useContext} from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import UserContext from "../contexts/UserContext";
+
 
 function Footer(){
-    const percentage = 66;
+    const { progress } = useContext(UserContext);
+
+    const navigate = useNavigate();
+
+    function goToday(){
+      navigate("/today");
+    }
+
     return(
         <Menu>
             <Link to={`/habits`} style={{ textDecoration: 'none' }}><p>Hábitos</p></Link>
-            <span className="progress-bar">                
-                <CircularProgressbar value={percentage} text={"Hoje"} 
+            <span onClick={goToday} className="progress-bar">                
+                <CircularProgressbar value={progress} text={"Hoje"} 
                 background
                 backgroundPadding={6}
                 styles={{

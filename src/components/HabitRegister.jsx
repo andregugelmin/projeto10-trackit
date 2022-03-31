@@ -1,43 +1,98 @@
+import axios from "axios";
 import { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
 
 function HabitRegister(props){
-    const {setIsRegisteringHabit, habits, setHabits} = props;
+    const {token, setIsRegisteringHabit, isLoading, setIsLoading, reloadHabits} = props;
+    const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
 
     const [habitName, setHabitName] = useState("");
-    const [days, setDays] = useState([{name: 'D', class: 'unselected'},
-                    {name: 'S', class: 'unselected'},
-                    {name: 'T', class: 'unselected'},
-                    {name: 'Q', class: 'unselected'},
-                    {name: 'Q', class: 'unselected'},
-                    {name: 'S', class: 'unselected'},
-                    {name: 'S', class: 'unselected'}]);
+    const [days, setDays] = useState([{name: 'D', class: 'unselected', number: 0},
+                    {name: 'S', class: 'unselected', number: 1},
+                    {name: 'T', class: 'unselected', number: 2},
+                    {name: 'Q', class: 'unselected', number: 3},
+                    {name: 'Q', class: 'unselected', number: 4},
+                    {name: 'S', class: 'unselected', number: 5},
+                    {name: 'S', class: 'unselected', number: 6}]);
+
+    const navigate = useNavigate();
 
     function selectDay(index){
-        let newDays = [...days];
-        newDays[index].class === 'selected' ? newDays[index].class = 'unselected' : newDays[index].class = 'selected';
-        setDays(newDays);
+        if(!isLoading){
+            let newDays = [...days];
+            newDays[index].class === 'selected' ? newDays[index].class = 'unselected' : newDays[index].class = 'selected';
+            setDays(newDays);
+        }        
     }
         
     function saveNewHabit(){
+        let habitDays = [];
+        days.forEach(day=> {if(day.class=='selected')  habitDays.push(day.number)})
         const newHabit = {
             name: habitName,
-            days: days
+            days: [...habitDays]
         }
 
-        setHabits([...habits, newHabit]);
-        setIsRegisteringHabit(false);
+        setIsLoading(true);
+
+        if(newHabit.name.length === 0){
+            alert("De um nome para o hábito");
+            setIsLoading(false);
+        }
+        else if(newHabit.days.length === 0){
+            alert("Selecione pelo menos um dia para o hábito");
+            setIsLoading(false);
+        }
+        else{
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+    
+            const promise = axios.post(API_URL, newHabit, config);
+    
+            promise.then(response => {
+                console.log(response);                
+                reloadHabits();
+            });
+            promise.catch(err => {
+                console.log(err.response)
+                setIsLoading(false);
+            });
+        }       
     }
 
+    function setButton(){
+        return isLoading ? (
+            <button className="load-button"><ThreeDots color="#FFFFFF" height={35} width={35} /></button>
+        ):(
+            <button onClick={saveNewHabit}>Salvar</button>
+        )
+
+    }
+
+    function setInput(){
+        return isLoading ? (
+            <input type="text" placeholder="nome do habito" value={habitName} disabled/>
+        ):(
+            <input type="text" placeholder="nome do habito" value={habitName} onChange={(e) => setHabitName(e.target.value)}/>
+        )
+    }
+
+    const input = setInput();
+    const btn = setButton();
     return(
         <Register>
-            <input type="text" placeholder="nome do habito" value={habitName} onChange={(e) => setHabitName(e.target.value)}/>
+            {input}
             <div className="days">
                 {days.map((day, index) => <div key={index} onClick={()=>selectDay(index)} className={`day ${day.class}`}>{day.name}</div>)}
             </div>
             <div className="buttons">
                 <p onClick={()=> setIsRegisteringHabit(false)}>Cancelar</p>
-                <button onClick={saveNewHabit}>Salvar</button>
+                {btn}
             </div>
             
         </Register>
@@ -123,6 +178,13 @@ const Register = styled.div`
         color: #FFFFFF;
         margin-top: 25px;
     }
+
+    .load-button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
 `;
 
 export default HabitRegister;

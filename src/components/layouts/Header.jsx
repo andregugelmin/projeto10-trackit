@@ -1,11 +1,15 @@
 import styled from "styled-components";
-import PH from "../../assets/imgs/placeholder.svg";
+import {useContext} from "react";
+
+import UserContext from "../contexts/UserContext";
 
 function Header(){
+    const { userImg } = useContext(UserContext);
+
     return(
         <Title>
             <h1>TrackIt</h1>
-            <img src={PH} alt="Profile Image"/>
+            <img src={'https://as01.epimg.net/meristation/imagenes/2021/08/22/noticias/1629625984_365680_1629626141_portada_normal.jpg'} alt="Profile Image"/>
         </Title>
     )
     

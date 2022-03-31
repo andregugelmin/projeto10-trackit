@@ -9,7 +9,7 @@ import Login from "./layouts/Login";
 import logo from "../assets/imgs/logo-trackit.png"
 
 function LoginScreen(){
-    const { token, setToken } = useContext(UserContext);
+    const { setToken, setUserImg } = useContext(UserContext);
     
     const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login'
     
@@ -25,10 +25,13 @@ function LoginScreen(){
         setIsLoading(true);
         const promise = axios.post(API_URL, loginData); 
         
-        promise.then((response) => {    
-            setToken(response.data.token)
+        promise.then((response) => {  
+            console.log(response.data);  
+            setToken(response.data.token);
+            setUserImg(response.data.image);
+            
             navigate("/today");
-            console.log(response.data);
+            
         });
         promise.catch(err => {
             alert(err.response.statusText);

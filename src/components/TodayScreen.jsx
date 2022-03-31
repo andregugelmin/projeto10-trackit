@@ -10,8 +10,9 @@ import HabitToday from "./HabitToday";
 import { Link } from "react-router-dom";
 
 function TodayScreen(){
-    const { token, setToken } = useContext(UserContext);
-    console.log(token);
+    const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
+    const { token } = useContext(UserContext);
+    
     return(
         <Container>
             <Header/>
