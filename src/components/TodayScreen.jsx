@@ -1,7 +1,8 @@
 import axios from "axios";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import styled from "styled-components";
 
+import UserContext from "./contexts/UserContext";
 import Container from "./layouts/Container";
 import Header from "./layouts/Header";
 import Footer from "./layouts/Footer";
@@ -9,7 +10,8 @@ import HabitToday from "./HabitToday";
 import { Link } from "react-router-dom";
 
 function TodayScreen(){
-    
+    const { token, setToken } = useContext(UserContext);
+    console.log(token);
     return(
         <Container>
             <Header/>

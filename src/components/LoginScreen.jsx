@@ -1,30 +1,46 @@
 import axios from "axios";
-import {useState, useEffect} from "react";
+import {useState, useContext} from "react";
 
 import { Link, useNavigate  } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 
+import UserContext from "./contexts/UserContext";
 import Login from "./layouts/Login";
 import logo from "../assets/imgs/logo-trackit.png"
 
 function LoginScreen(){
+    const { token, setToken } = useContext(UserContext);
+    
     const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login'
+    
     const[isLoading, setIsLoading] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
-    const [loginPassword, setLoginPaswword] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
 
     const navigate = useNavigate();
 
     function login(event){
         event.preventDefault();
+        const loginData = {email: loginEmail, password: loginPassword};
+        setIsLoading(true);
+        const promise = axios.post(API_URL, loginData); 
         
+        promise.then((response) => {    
+            setToken(response.data.token)
+            navigate("/today");
+            console.log(response.data);
+        });
+        promise.catch(err => {
+            alert(err.response.statusText);
+            setIsLoading(false);
+        });
     }
 
     function setForm(){
         return !isLoading ? (
             <form onSubmit={login}>
-                <input required type="text" placeholder="email"/>
-                <input required type="password" placeholder="senha"/>
+                <input required type="text" placeholder="email" value={loginEmail} onChange={(e) =>{setLoginEmail(e.target.value)}}/>
+                <input required type="password" placeholder="senha" value={loginPassword} onChange={(e) =>{setLoginPassword(e.target.value)}}/>
                 <button type="submit">Entrar</button>
             </form>
         ) :
