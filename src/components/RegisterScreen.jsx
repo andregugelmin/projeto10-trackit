@@ -1,12 +1,10 @@
 import axios from "axios";
-import {useState, useEffect} from "react";
+import {useState} from "react";  
+import { Link , useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
 
 import Login from "./layouts/Login";
 import logo from "../assets/imgs/logo-trackit.png"
-import { Link } from "react-router-dom";
-
-
-
 
 function RegisterScreen(){
     const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up';
@@ -16,20 +14,54 @@ function RegisterScreen(){
     const [registerName, setName] = useState('');
     const [registerImage, setImage] = useState('');
 
-    function sendToApi(){
+    const[isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
+
+    function sendToApi(event){
+        event.preventDefault();
         const registerData = {email: registerEmail, password: registerPassword, name: registerName, image: registerImage};
-        console.log(registerData);
+        setIsLoading(true);
+        const promise = axios.post(API_URL, registerData);
+
+        promise.then((response) => {    
+            navigate("/");
+            console.log(response.data);
+        });
+        promise.catch(err => {
+            alert(err.response.statusText);
+            setIsLoading(false);
+        });
     }
+
+    function setForm(){
+        return !isLoading ? (
+            <form onSubmit={sendToApi}>
+                <input required type="text" placeholder="email" value={registerEmail} onChange={(e) =>{setEmail(e.target.value)}}/>
+                <input required type="password" placeholder="senha"  value={registerPassword} onChange={(e) =>{setPassword(e.target.value)}}/>
+                <input required type="text" placeholder="nome"  value={registerName} onChange={(e) =>{setName(e.target.value)}}/>
+                <input required type="url" placeholder="foto"  value={registerImage} onChange={(e) =>{setImage(e.target.value)}}/>
+                <button type="submit">Cadastrar</button>
+            </form>  
+        ) :
+        (
+            <form>
+                <input disabled type="text" placeholder="email" value={registerEmail} onChange={(e) =>{setEmail(e.target.value)}}/>
+                <input disabled type="password" placeholder="senha"  value={registerPassword} onChange={(e) =>{setPassword(e.target.value)}}/>
+                <input disabled type="text" placeholder="nome"  value={registerName} onChange={(e) =>{setName(e.target.value)}}/>
+                <input disabled type="url" placeholder="foto"  value={registerImage} onChange={(e) =>{setImage(e.target.value)}}/>
+                <button className="load-button"><ThreeDots color="#FFFFFF" height={50} width={50} /></button>
+            </form>  
+        )
+    }
+
+    const form = setForm();
 
     return(
         <Login>
             <img src={logo} alt="Logo TrackIt"/>
             <h1>TrackIt</h1>
-            <input type="text" placeholder="email" value={registerEmail} onChange={(e) =>{setEmail(e.target.value)}}/>
-            <input type="password" placeholder="senha"  value={registerPassword} onChange={(e) =>{setPassword(e.target.value)}}/>
-            <input type="text" placeholder="nome"  value={registerName} onChange={(e) =>{setName(e.target.value)}}/>
-            <input type="text" placeholder="foto"  value={registerImage} onChange={(e) =>{setImage(e.target.value)}}/>
-            <button onClick={sendToApi}>Cadastrar</button>
+            {form}                      
             <Link to={`/`}><p>Ja ter uma conta? Faça login!</p></Link>
         </Login>
     )

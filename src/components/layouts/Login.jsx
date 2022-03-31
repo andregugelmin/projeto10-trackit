@@ -50,12 +50,25 @@ const Login = styled.div`
         color: #FFFFFF;
     }
 
+    .load-button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     p{
         font-size: 14px;
         line-height: 17px;
         text-decoration-line: underline;
 
         color: #52B6FF;
+    }
+
+    form{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 `;
 
