@@ -28,6 +28,7 @@ function LoginScreen(){
     }
     else if(isLoading){
         setIsLoading(false);
+        setIsLogingIn(false);
     }
 
     function sendUserObjToApi(userObj){
@@ -42,7 +43,7 @@ function LoginScreen(){
         });
         promise.catch(err => {
             alert(err.response.statusText);
-            isLogingIn(false);
+            setIsLogingIn(false);
             setIsLoading(false);
         });
     }
@@ -50,7 +51,7 @@ function LoginScreen(){
     function login(event){
         event.preventDefault();
         const loginData = {email: loginEmail, password: loginPassword};
-        isLogingIn(true);
+        setIsLogingIn(true);
         sendUserObjToApi(loginData);
     }
 
