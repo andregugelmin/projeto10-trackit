@@ -26,7 +26,6 @@ function LoginScreen(){
         const promise = axios.post(API_URL, loginData); 
         
         promise.then((response) => {  
-            console.log(response.data);  
             setToken(response.data.token);
             setUserImg(response.data.image);
             
@@ -49,8 +48,8 @@ function LoginScreen(){
         ) :
         (
             <form>
-                <input disabled type="text" placeholder="email"/>
-                <input disabled type="password" placeholder="senha"/>
+                <input disabled type="text" placeholder="email" value={loginEmail} />
+                <input disabled type="password" placeholder="senha" value={loginPassword}/>
                 <button className="load-button"><ThreeDots color="#FFFFFF" height={50} width={50} /></button>
              </form>            
         )

@@ -24,17 +24,16 @@ function HabitsScreen(){
             Authorization: `Bearer ${token}`
             }
         }
-        setIsLoading(false);
+        setIsLoading(true);
         const promise = axios.get(API_URL, config);
 
         promise.then(response => {
             const {data} = response;
             setHabits(data);
-            console.log(data);
             setIsLoading(false);
         });
         promise.catch(err => {
-            console.log(err.response)
+            alert(err.response.statusText);
             setIsLoading(false);
         });
     }
@@ -48,17 +47,16 @@ function HabitsScreen(){
         loadHabitsFromAPI();
     }
 
-    function setRegisterHabit() {
-        return !isRegisteringHabit ? <></>
-        :  <HabitRegister token={token} setIsRegisteringHabit={setIsRegisteringHabit} isLoading={isLoading} setIsLoading={setIsLoading} reloadHabits={reloadHabits}/>       
+    function setVisible() {
+            return isRegisteringHabit ? (true) : (false);
     }
 
     function setHabitsList(){
-        return (habits.length > 0) ? <>{habits.map((habit, index) => <Habit key={index} habit={habit}/>)}</>
+        return (habits.length > 0) ? <>{habits.map((habit, index) => <Habit key={index} token={token} habit={habit} loadHabitsFromAPI={loadHabitsFromAPI}/>)}</>
         : <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
     }
 
-    const registerHabit = setRegisterHabit();
+    const visible = setVisible();
     const habitsList = setHabitsList();
     return(
         <Container>
@@ -68,7 +66,7 @@ function HabitsScreen(){
                     <h1>Meus hábitos</h1>
                     <button onClick={() => {if(!isRegisteringHabit) setIsRegisteringHabit(true)}}>+</button>
                 </div>
-                {registerHabit}
+                <HabitRegister visible={visible} token={token} setIsRegisteringHabit={setIsRegisteringHabit} isLoading={isLoading} setIsLoading={setIsLoading} reloadHabits={reloadHabits}/>
                 {habitsList}
             </Habits>
             <Footer/>

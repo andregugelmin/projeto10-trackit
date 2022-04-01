@@ -1,8 +1,9 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 function Habit(props){
-    const {habit} = props;
+    const {token, habit, loadHabitsFromAPI} = props;
 
     const [days, setDays] = useState([
         {name: 'D', class: 'unselected', number: 0},
@@ -16,13 +17,31 @@ function Habit(props){
 
     useEffect(() => {
         let selectedDays = [...days];
-        selectedDays.map(day => {
+        selectedDays.forEach(day => {
             if(habit.days.includes(day.number)) day.class = 'selected';
         })   
         setDays(selectedDays);
-
-        console.log(selectedDays);
     }, []);    
+
+    function deleteHabit(){
+        const API_URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habit.id}`
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        const promise = axios.delete(API_URL, config);
+
+        promise.then(response => {
+            console.log(response);
+            loadHabitsFromAPI();
+        });
+        promise.catch(err => {
+            console.log(err.response.statusText);
+        });
+
+    }
     
     return(
     <HabitElemet>
@@ -30,7 +49,7 @@ function Habit(props){
         <div className="days">
             {days.map((day, index)=> <div key={index} className={`day ${day.class}`}>{day.name}</div>)}
         </div>
-        <ion-icon name="trash-outline"></ion-icon>
+        <ion-icon onClick={deleteHabit} name="trash-outline"></ion-icon>
     </HabitElemet>
     )
 }

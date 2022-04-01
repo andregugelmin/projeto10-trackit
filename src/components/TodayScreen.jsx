@@ -1,32 +1,90 @@
 import axios from "axios";
-import {useState, useEffect, useContext} from "react";
+import {useState, useContext, useEffect} from "react";
 import styled from "styled-components";
+import dayjs from "dayjs";
+import 'dayjs/locale/pt-br'
 
 import UserContext from "./contexts/UserContext";
 import Container from "./layouts/Container";
 import Header from "./layouts/Header";
 import Footer from "./layouts/Footer";
 import HabitToday from "./HabitToday";
-import { Link } from "react-router-dom";
+
 
 function TodayScreen(){
-    const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
-    const { token } = useContext(UserContext);
+    const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
+    const { token, progress, setProgress } = useContext(UserContext);
     
+    const [todayHabits, setTodayHabits] = useState([]);
+    const [date, setDate] = useState('');
+
+    useEffect(() => {
+        checkAndSetPercentage();        
+    }, [todayHabits]);
+
+    useEffect(() => {
+        loadTodayHabitsFromAPI();
+        setDate(getDate);
+    }, []);
+
+    function loadTodayHabitsFromAPI(){
+        const config = {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        }
+        
+        const promise = axios.get(API_URL, config);
+
+        promise.then(response => {
+            const {data} = response;
+            setTodayHabits(data);
+        });
+        promise.catch(err => {
+            console.log(err.response.statusText);
+        });
+    }
+
+    function getDate(){
+        return dayjs().locale('pt-br').format('dddd, DD/MM');
+    }
+
+    function checkAndSetPercentage(){
+        const totalHabitsToday = todayHabits.length;
+        let habitsDone = 0;
+        let todayPercentage = 0;
+        todayHabits.forEach((habit)=>{ if(habit.done) habitsDone++});
+        if(totalHabitsToday>0) todayPercentage = Math.floor((habitsDone/totalHabitsToday)*100);
+        setProgress(todayPercentage);
+    }
+
+    function setSubtitle(){
+        
+        return (progress===0) ? (
+            <h2>Nenhum hábito concluído ainda</h2>
+        ):(
+            <h2>{progress}% dos hábitos concluídos</h2>
+        )
+    }
+
+    const subtitle = setSubtitle();
     return(
         <Container>
             <Header/>
-            <Today>
-                <h1>Segunda, 17/05</h1>
-                <h2>Nenhum hábito concluído ainda</h2>
-                <HabitToday/>
-                <HabitToday/>
-                <HabitToday/>
+            <Today percentage={progress}>
+                <h1>{date}</h1>
+                {subtitle}
+                {todayHabits.map((habit) => <HabitToday key={habit.id} habit={habit} loadHabits={loadTodayHabitsFromAPI} token={token}/>)}
             </Today>
-            <Footer/>
+            <Footer />
         </Container>       
     )
     
+}
+
+function setColor(percentage) {
+    if(percentage>0) return "#8FC549";
+    else return "#BABABA;"; 
 }
 
 const Today = styled.div`
@@ -34,7 +92,7 @@ const Today = styled.div`
     h2{
         font-size: 18px;
         line-height: 22px;
-        color: #BABABA;
+        color: ${({percentage}) => setColor(percentage)};
     }
     
 `;

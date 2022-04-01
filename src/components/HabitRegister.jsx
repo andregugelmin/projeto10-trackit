@@ -1,23 +1,21 @@
 import axios from "axios";
 import { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 
 function HabitRegister(props){
-    const {token, setIsRegisteringHabit, isLoading, setIsLoading, reloadHabits} = props;
+    const {visible, token, setIsRegisteringHabit, isLoading, setIsLoading, reloadHabits} = props;
     const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
 
     const [habitName, setHabitName] = useState("");
-    const [days, setDays] = useState([{name: 'D', class: 'unselected', number: 0},
-                    {name: 'S', class: 'unselected', number: 1},
-                    {name: 'T', class: 'unselected', number: 2},
-                    {name: 'Q', class: 'unselected', number: 3},
-                    {name: 'Q', class: 'unselected', number: 4},
-                    {name: 'S', class: 'unselected', number: 5},
-                    {name: 'S', class: 'unselected', number: 6}]);
-
-    const navigate = useNavigate();
+    const cleanDays = [{name: 'D', class: 'unselected', number: 0},
+                        {name: 'S', class: 'unselected', number: 1},
+                        {name: 'T', class: 'unselected', number: 2},
+                        {name: 'Q', class: 'unselected', number: 3},
+                        {name: 'Q', class: 'unselected', number: 4},
+                        {name: 'S', class: 'unselected', number: 5},
+                        {name: 'S', class: 'unselected', number: 6}]
+    const [days, setDays] = useState(cleanDays);
 
     function selectDay(index){
         if(!isLoading){
@@ -29,7 +27,7 @@ function HabitRegister(props){
         
     function saveNewHabit(){
         let habitDays = [];
-        days.forEach(day=> {if(day.class=='selected')  habitDays.push(day.number)})
+        days.forEach(day=> {if(day.class==='selected')  habitDays.push(day.number)})
         const newHabit = {
             name: habitName,
             days: [...habitDays]
@@ -55,11 +53,12 @@ function HabitRegister(props){
             const promise = axios.post(API_URL, newHabit, config);
     
             promise.then(response => {
-                console.log(response);                
+                setDays(cleanDays);      
+                setHabitName("");          
                 reloadHabits();
             });
             promise.catch(err => {
-                console.log(err.response)
+                alert(err.response.statusText);
                 setIsLoading(false);
             });
         }       
@@ -84,7 +83,8 @@ function HabitRegister(props){
 
     const input = setInput();
     const btn = setButton();
-    return(
+    return visible ? (
+        
         <Register>
             {input}
             <div className="days">
@@ -96,7 +96,7 @@ function HabitRegister(props){
             </div>
             
         </Register>
-    )
+    ) : (<></>)
     
 }
 

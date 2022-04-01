@@ -9,7 +9,7 @@ function Header(){
     return(
         <Title>
             <h1>TrackIt</h1>
-            <img src={'https://as01.epimg.net/meristation/imagenes/2021/08/22/noticias/1629625984_365680_1629626141_portada_normal.jpg'} alt="Profile Image"/>
+            <img src={userImg} alt="Profile"/>
         </Title>
     )
     

@@ -26,7 +26,6 @@ function RegisterScreen(){
 
         promise.then((response) => {    
             navigate("/");
-            console.log(response.data);
         });
         promise.catch(err => {
             alert(err.response.statusText);
