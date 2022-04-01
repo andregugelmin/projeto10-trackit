@@ -1,6 +1,7 @@
 import axios from "axios";
 import {useState, useEffect, useContext} from "react";
 import styled from "styled-components";
+import { useNavigate  } from "react-router-dom";
 
 import UserContext from "./contexts/UserContext";
 import Container from "./layouts/Container";
@@ -10,13 +11,24 @@ import HabitRegister from "./HabitRegister";
 import Habit from "./Habit";
 
 function HabitsScreen(){
-    const { token } = useContext(UserContext);
+    const { token, setNavigateTo } = useContext(UserContext);
     const API_URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
 
 
     const [isRegisteringHabit, setIsRegisteringHabit] = useState(false);
     const [habits, setHabits] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!token){
+            setNavigateTo('/habits');
+            navigate("/");
+        }
+        else loadHabitsFromAPI();
+    }, []);
+
 
     function loadHabitsFromAPI(){
         const config = {
@@ -37,11 +49,7 @@ function HabitsScreen(){
             setIsLoading(false);
         });
     }
-
-    useEffect(() => {
-        loadHabitsFromAPI();
-    }, []);
-
+    
     function reloadHabits(){
         setIsRegisteringHabit(false);
         loadHabitsFromAPI();

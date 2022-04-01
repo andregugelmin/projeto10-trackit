@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useState, useContext, useEffect} from "react";
+import { useNavigate  } from "react-router-dom";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import 'dayjs/locale/pt-br'
@@ -18,13 +19,21 @@ function TodayScreen(){
     const [todayHabits, setTodayHabits] = useState([]);
     const [date, setDate] = useState('');
 
+    const navigate = useNavigate();
+    
+
     useEffect(() => {
         checkAndSetPercentage();        
     }, [todayHabits]);
 
     useEffect(() => {
-        loadTodayHabitsFromAPI();
-        setDate(getDate);
+        if(!token){
+            navigate("/");
+        }
+        else{
+            loadTodayHabitsFromAPI();
+            setDate(getDate);
+        }        
     }, []);
 
     function loadTodayHabitsFromAPI(){
@@ -41,7 +50,7 @@ function TodayScreen(){
             setTodayHabits(data);
         });
         promise.catch(err => {
-            console.log(err.response.statusText);
+            console.log(err.response.data.message);            
         });
     }
 

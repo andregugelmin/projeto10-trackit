@@ -26,7 +26,7 @@ function HabitToday(props){
             loadHabits();
         });
         promise.catch(err => {
-            console.log(err.response.statusText);
+            console.log(err.response.data.message);
         });
     }
 

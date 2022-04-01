@@ -12,8 +12,10 @@ function App() {
   const [token, setToken] = useState("");
   const [userImg, setUserImg] = useState("");
   const [progress, setProgress] = useState(0);
+  const [navigateTo, setNavigateTo] = useState('/today');
+  
   return (
-    <UserContext.Provider value={{token, setToken, userImg, setUserImg, progress, setProgress}}>
+    <UserContext.Provider value={{token, setToken, userImg, setUserImg, progress, setProgress, navigateTo, setNavigateTo}}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginScreen/>} />
