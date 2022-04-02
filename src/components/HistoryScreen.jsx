@@ -18,6 +18,8 @@ function HistoryScreen() {
 		"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily";
 
 	const [apiHabits, setApiHabits] = useState([]);
+	const [habitsList, setHabitList] = useState([]);
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -69,14 +71,61 @@ function HistoryScreen() {
 		else return <p className="incompleted">{dayjs(date).format("DD")}</p>;
 	}
 
+	function listHabits(date) {
+		const dateFormated = dayjs(date).format("DD/MM/YYYY");
+		let currentHabits = null;
+		apiHabits.forEach((apiHabit) => {
+			if (apiHabit.day === dateFormated) {
+				currentHabits = apiHabit.habits;
+			}
+		});
+
+		setHabitList(currentHabits);
+	}
+
+	function setHabitsHTML() {
+		return habitsList.length > 0 ? (
+			<div className="habits-list">
+				{habitsList.map((habit, index) => (
+					<div key={index} className="habits">
+						<p className="habit-name">{habit.name}: </p>
+						<p className={habit.done ? "habit-done" : "habit-not-done"}>
+							{habit.done ? `Feito` : `Não feito`}
+						</p>
+					</div>
+				))}
+			</div>
+		) : (
+			<></>
+		);
+	}
+
+	function setHabitsTitleHTML() {
+		let habitDay = "";
+		if (habitsList.length > 0) habitDay = habitsList[0].date;
+
+		return habitsList.length > 0 ? (
+			<h2>Hábitos do dia {dayjs(habitDay).locale("pt-br").format("DD/MM")}</h2>
+		) : (
+			<></>
+		);
+	}
+
+	let habitsHTML = setHabitsHTML();
+	let habitsTitle = setHabitsTitleHTML();
 	return (
 		<Container>
 			<Header />
 			<History>
 				<h1>Histórico</h1>
 				<CalendarStyle>
-					<Calendar formatDay={(locale, date) => setDayClass(date)} />
+					<Calendar
+						formatDay={(locale, date) => setDayClass(date)}
+						onClickDay={(date) => listHabits(date)}
+					/>
 				</CalendarStyle>
+				{habitsTitle}
+				{habitsHTML}
 			</History>
 			<Footer />
 		</Container>
@@ -84,11 +133,46 @@ function HistoryScreen() {
 }
 
 const History = styled.div`
+	padding-bottom: 140px;
+
 	h2 {
+		font-size: 22px;
+		line-height: 26px;
+		color: #474747;
+		margin-top: 25px;
+	}
+
+	.habits-list {
+		margin-top: 10px;
+		background: #ffffff;
+		padding-top: 10px;
+		padding-bottom: 20px;
+		padding-left: 20px;
+		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+	}
+
+	.habits {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		margin-top: 10px;
+	}
+
+	.habits-list p {
+		margin-right: 20px;
 		font-size: 18px;
-		line-height: 22px;
-		color: #666666;
-		margin-top: 17px;
+	}
+
+	.habit-name {
+		color: #474747;
+	}
+
+	.habit-done {
+		color: #73c00f;
+	}
+
+	.habit-not-done {
+		color: #e01e1e;
 	}
 `;
 
