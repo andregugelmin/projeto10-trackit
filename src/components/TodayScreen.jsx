@@ -18,13 +18,11 @@ function TodayScreen() {
 
 	const [todayHabits, setTodayHabits] = useState([]);
 	const [date, setDate] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
 
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		checkAndSetPercentage();
-		setIsLoading(false);
 	}, [todayHabits]);
 
 	useEffect(() => {
@@ -105,6 +103,8 @@ function setColor(percentage) {
 }
 
 const Today = styled.div`
+	padding-bottom: 140px;
+
 	h2 {
 		font-size: 18px;
 		line-height: 22px;

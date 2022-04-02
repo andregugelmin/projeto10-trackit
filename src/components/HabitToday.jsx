@@ -36,12 +36,14 @@ function HabitToday(props) {
 		>
 			<div>
 				<h1>{habit.name}</h1>
-				<p className="current-sequence">
-					Sequência atual: {habit.currentSequence} dias
-				</p>
-				<p className="highest-sequence">
-					Seu recorde: {habit.highestSequence} dias
-				</p>
+				<div className="sequences">
+					<p>Sequência atual: </p>
+					<p className="current-sequence">{habit.currentSequence} dias</p>
+				</div>
+				<div className="sequences">
+					<p>Seu recorde: </p>
+					<p className="highest-sequence">{habit.highestSequence} dias</p>
+				</div>
 			</div>
 			<ion-icon onClick={checkHabit} name="checkbox"></ion-icon>
 		</Habit>
@@ -81,17 +83,25 @@ const Habit = styled.div`
 		color: #666666;
 	}
 	p {
+		color: #666666;
 		font-size: 13px;
 		line-height: 16px;
 	}
 
+	.sequences {
+		display: flex;
+		margin-top: 6px;
+	}
+
 	.current-sequence {
 		color: ${({ checked }) => colorText(checked)};
+		margin-left: 6px;
 	}
 
 	.highest-sequence {
 		color: ${({ checked, current, highest }) =>
 			colorHighest(checked, current, highest)};
+		margin-left: 6px;
 	}
 
 	ion-icon {
