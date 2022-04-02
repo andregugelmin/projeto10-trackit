@@ -73,7 +73,7 @@ function HistoryScreen() {
 
 	function listHabits(date) {
 		const dateFormated = dayjs(date).format("DD/MM/YYYY");
-		let currentHabits = null;
+		let currentHabits = [];
 		apiHabits.forEach((apiHabit) => {
 			if (apiHabit.day === dateFormated) {
 				currentHabits = apiHabit.habits;
