@@ -24,7 +24,7 @@ function HabitToday(props) {
 			loadHabits();
 		});
 		promise.catch((err) => {
-			console.log(err.response.data.message);
+			alert(err.response.data.message);
 		});
 	}
 
@@ -50,7 +50,7 @@ function HabitToday(props) {
 
 function colorIcon(checked) {
 	if (checked) return "#8FC549";
-	else return "#EBEBEB";
+	else return "#d6d2d2";
 }
 
 function colorText(checked) {
@@ -73,6 +73,7 @@ const Habit = styled.div`
 	border-radius: 5px;
 	padding-left: 15px;
 	padding-right: 13px;
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
 
 	h1 {
 		font-size: 20px;

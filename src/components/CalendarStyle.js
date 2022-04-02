@@ -7,6 +7,7 @@ const CalendarStyle = styled.div`
 		background: white;
 		line-height: 1.125em;
 		border-radius: 10px;
+		box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.15);
 	}
 	.react-calendar--doubleView {
 		width: 700px;
