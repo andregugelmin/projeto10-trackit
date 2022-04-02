@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import GlobalCSSConfig from "./GlobalCSSConfig";
 import UserContext from "./contexts/UserContext";
 import LoginScreen from "./LoginScreen";
 import RegisterScreen from "./RegisterScreen";
@@ -15,6 +16,8 @@ function App() {
   const [navigateTo, setNavigateTo] = useState('/today');
   
   return (
+    <>
+    <GlobalCSSConfig/>
     <UserContext.Provider value={{token, setToken, userImg, setUserImg, progress, setProgress, navigateTo, setNavigateTo}}>
       <BrowserRouter>
         <Routes>
@@ -26,6 +29,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
+    </>
   )
 }
 
